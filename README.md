@@ -4,7 +4,7 @@ R version 3.2.4 Revised
 8/5/2017
 e-mail: oguayasa@gmail.com
 
-General Notes: Needs to be modified according to current data frame. 
+General Notes: Needs to be modified according to current data frames. 
 
 Summary:
 Applying linear discriminant analysis (LDA) on eye-movement behaviors for 
