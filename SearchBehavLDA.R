@@ -15,7 +15,7 @@
 # between the centers of the data while at the same time minimizing the 
 # variation within each group of data.
 #
-# Requires: Data files, MASS, ggplot2, readxl
+# Requires: Data files, MASS, ggplot2, readxl, scales, plyr
 #
 # Outputs: Results of LDA dimensionality reduction in .doc file containing 
 # console output, jpeg files of histograms and cluster plots of LDA components 
