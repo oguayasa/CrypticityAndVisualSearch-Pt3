@@ -60,20 +60,21 @@ m1.lda <- lda(search.Class ~ NumSamplingTrips + NumFixComp + NumGazeComp +
 
 Classification results
 
-|                  |        Fn|       Fp|        Tn|                                                                                                                                                                                   Tp|
-|------------------|---------:|--------:|---------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| FalseNegative    |     46.90|     7.59|     43.45|                                                                                                                                                                                 2.07|
-| FalsePositive    |     14.29|    53.85|      0.00|                                                                                                                                                                                31.87|
-| TrueNegative     |     24.66|     0.34|     73.65|                                                                                                                                                                                 1.35|
-| TruePositive     |      1.69|     7.46|      0.34|                                                                                                                                                                                90.51|
-| Correct classifi |  cation r|  ates go|  along th|  e diagonal. This model performs best at classifying True Positive search outcomes, with a success rate of 91%, and is pretty dismal at correctly classifying False Negatives (47%).|
+|               |     Fn|     Fp|     Tn|     Tp|
+|---------------|------:|------:|------:|------:|
+| FalseNegative |  46.90|   7.59|  43.45|   2.07|
+| FalsePositive |  14.29|  53.85|   0.00|  31.87|
+| TrueNegative  |  24.66|   0.34|  73.65|   1.35|
+| TruePositive  |   1.69|   7.46|   0.34|  90.51|
+
+Correct classification rates go along the diagonal. This model performs best at classifying True Positive search outcomes, with a success rate of 91%, and is pretty dismal at correctly classifying False Negatives (47%).
 
 Examine contents of our LDA model
 ---------------------------------
 
 The number of observations per Search Outcome class
 
-|     |     |
+|Class| #Obs|
 |:----|----:|
 | Fn  |  290|
 | Fp  |   91|
@@ -82,7 +83,7 @@ The number of observations per Search Outcome class
 
 The prior probabilities of each class
 
-|     |      |
+|Class| Prior|
 |:----|-----:|
 | Fn  |  0.30|
 | Fp  |  0.09|
@@ -133,15 +134,15 @@ h1.Data = data.frame(SearchType = search.Data$search.Class, DifTreatment =
 LD Scores by Search Outcome
 ---------------------------
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-18-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist1.jpg)
 
 **Figure 1** Histogram of LD1 scores by Search Outcome class with visible means. Note separation between positive and negative search classes.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist2.jpg)
 
 **Figure 2** Histogram of LD2 scores by Search Outcome class with visible means. Note slight spearation between true and false search classes.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/clust1.jpg)
 
 **Figure 3** Cluster plot showing division of LD1 and LD2 across Search Outcome classes. Note "decent" separation among classes.
 
@@ -150,58 +151,15 @@ From examining these plots, it appears that LD1 is responsible for separating se
 LD Scores by Difficulty Treatment
 ---------------------------------
 
-``` r
-#save difficulty treatment histogram as jpeg image
-ggplot(data = h1.Data, aes(x = LDA.LD1, fill = DifTreatment)) + 
-  # histogram
-  geom_histogram(alpha = 0.4, position = "identity", breaks = seq(-5, 8, 0.5)) + 
-  # mean lines
-  geom_vline(data = h1.DifMus, aes(xintercept = LD1.mean, 
-             colour = DifTreatment), linetype = "dashed") +  
-  labs(x = "LD1 Score", y = "Count") + # axes labels and plot titles
-  ggtitle("LD1 Score by Experimental Treatment: Easy vs Hard", 
-          subtitle = "LDA estimated with 4 classes (Search Types)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 16), 
-        plot.subtitle = element_text(hjust = 0.5, size = 12))
-```
-
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist3.jpg)
 
 **Figure 4** Histogram of LD1 scores by experimental Difficulty Treatment with visible class means. Not much separation here.
 
-``` r
-#save difficulty treatment histogram as jpeg image
-ggplot(data = h1.Data, aes(x = LDA.LD2, fill = DifTreatment)) + 
-  # histogram
-  geom_histogram(alpha = 0.4, position = "identity", breaks = seq(-5, 8, 0.5)) + 
-  # mean lines
-  geom_vline(data = h2.DifMus, aes(xintercept = LD2.mean, 
-             colour = DifTreatment), linetype = "dashed") +  
-  labs(x = "LD2 Score", y = "Count") + # axes labels and plot titles
-  ggtitle("LD2 Score by Experimental Treatment: Easy vs Hard", 
-          subtitle = "LDA estimated with 4 classes (Search Types)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 16), 
-        plot.subtitle = element_text(hjust = 0.5, size = 12))
-```
-
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-23-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist4.jpg)
 
 **Figure 5** Histogram of LD2 scores by experimental Difficulty Treatment with visible class means. Slightly better seperation than achieved with LD1 transformation.
 
-``` r
-# show division of ld1 and ld2 scores across classes as cluster plots
-ggplot(cluster1.Data) + 
-  geom_point(aes(LDA.LD1, LDA.LD2,colour = DifTreatment, shape = DifTreatment), 
-             size = 2.0) + 
-  labs(x = paste("LD1 (", percent(prop.VarExp1[1, 1]), ")"), y = 
-       paste("LD2 (", percent(prop.VarExp1[2, 1]), ")")) +
-  ggtitle("Experimental Treatments in LD Space: Easy vs Hard", 
-          subtitle = "LDA Constructed with 4 Classes (Search Types)") +
-  theme(plot.title = element_text(hjust = 0.5, size = 16), 
-        plot.subtitle = element_text(hjust = 0.5, size = 12))
-```
-
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-24-1.png)
+![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/clust2.jpg)
 
 **Figure 6** Cluster plot showing division of LD1 and LD2 across experimental Difficulty Treatment classes. It's not really fantastic.
 
@@ -212,12 +170,6 @@ Relating original variables to LD1 and LD2
 
 Coefficient values of each variable in the discriminant function equations for LD1 and LD2
 ------------------------------------------------------------------------------------------
-
-``` r
-original.Components = data.frame(m2.lda$scaling)
-kable(original.Components[,1:2], 
-      caption = "Coefficients of linear discriminants", digits = 2)
-```
 
 |                  |    LD1|    LD2|
 |------------------|------:|------:|
@@ -235,19 +187,6 @@ Interpreting LD1 and LD2 with variable loadings
 -----------------------------------------------
 
 Correlate the original variable values with the LD "scores" to determine how each original variable relates each LD function.
-
-``` r
-search.Data.4cor = data.frame(NumSamplingTrips = search.Data$NumSamplingTrips,
-                              NumFixComp = search.Data$NumFixComp, 
-                              NumGazeComp = search.Data$NumGazeComp, 
-                              TotNumFix = search.Data$TotNumFix, 
-                              AvgDurFix = search.Data$AvgDurFix, 
-                              Fix2End = search.Data$Fix2End, 
-                              ActiveSearchTime = search.Data$ActiveSearchTime)
-loadings.Components = cor(search.Data.4cor, m2.pred$x)
-kable(data.frame(loadings.Components)[,1:2], 
-      caption = "Loadings of original variables", digits = 2)
-```
 
 |                  |    LD1|   LD2|
 |------------------|------:|-----:|
