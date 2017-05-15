@@ -1,8 +1,10 @@
-This code demonstrates an application of linear discriminant analysis ([LDA](http://sebastianraschka.com/Articles/2014_python_lda.html)) for dimensionality reduction. Using a data set containing several different eye-movement measures taken during easy and difficult visual search tasks, this code uses LDA to determine the combination of variables that best separates the different classes. LDA finds a linear combination of the predictors that gives maximum separation between the centers of the data while at the same time minimizing the variation within each group of data.Do LDA Analysis on search behavior data to determine if different search types and difficulties are unique classes.
+This code demonstrates an application of linear discriminant analysis ([LDA](http://sebastianraschka.com/Articles/2014_python_lda.html)) for dimensionality reduction. Using a data set containing several different eye-movement measures taken during easy and difficult visual search tasks, this code uses LDA to determine the linear combination of variables that best separates the different classes. LDA finds a linear combination of the original predictors and their coeffients that gives maximum separation between the centers of the data while at the same time minimizing the variation within each group of data. 
 
-Outputs the results of LDA anlaysis as a cluster plot with data points colored by search type and difficulty treatment.
+The LD functions can be used to to transform individual data rows to LD "scores". Here we plot these scores and compare across classes to see if there are significantly different search behaviors exhibited across search types and difficulty treatments. Additionally, we  can correlate these LD coefficients with the transformed data in order to determine how each of the original variables "loads" onto the LD functions. 
 
-Converts individual behaviors to LDA scores. Compare scores across classes to see if there are significantly different search behaviors exhibited across search types and difficulty treatments.
+Requires: Data files, MASS, ggplot2, readxl, scales, plyr
+
+Outputs: The results of LDA anlaysis as tables, histograms, and cluster plots.
 
 Initializing Steps
 ==================
