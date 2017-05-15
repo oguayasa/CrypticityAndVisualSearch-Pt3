@@ -112,7 +112,7 @@ Create data frame with LD projections (scores) based on original data
 LD Scores by Search Outcome
 ---------------------------
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-16-1.png)
+![Figure1](oguayasa/eyemovement-lda/imgs/hist1.jpg)
 
 **Figure 1** Histogram of LD1 scores by Search Outcome class with visible means. Note separation between positive and negative search classes.
 
