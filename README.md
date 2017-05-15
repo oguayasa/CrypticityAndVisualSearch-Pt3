@@ -60,7 +60,7 @@ Examine contents of our LDA model
 
 The number of observations per Search Outcome class
 
-|     |     |
+|Class| #Obs|
 |:----|----:|
 | Fn  |  290|
 | Fp  |   91|
@@ -69,7 +69,7 @@ The number of observations per Search Outcome class
 
 The prior probabilities of each class
 
-|     |      |
+|Class| Prior|
 |:----|-----:|
 | Fn  |  0.30|
 | Fp  |  0.09|
@@ -116,26 +116,26 @@ LD Scores by Search Outcome
 
 **Figure 1** Histogram of LD1 scores by Search Outcome class with visible means. Note separation between positive and negative search classes.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-17-1.png)
+![Figure2](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist2.jpg)
 
 **Figure 2** Histogram of LD2 scores by Search Outcome class with visible means. Note slight spearation between true and false search classes.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-19-1.png)
+![Figure3](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/clust1.jpg)
 
 **Figure 3** Cluster plot showing division of LD1 and LD2 across Search Outcome classes. Note "decent" separation among classes.
 
 LD Scores by Difficulty Treatment
 ---------------------------------
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-20-1.png)
+![Figure4](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist3.jpg)
 
 **Figure 4** Histogram of LD1 scores by experimental Difficulty Treatment with visible class means. Not much separation here.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-21-1.png)
+![Figure5](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist4.jpg)
 
 **Figure 5** Histogram of LD2 scores by experimental Difficulty Treatment with visible class means. Slightly better seperation than achieved with LD1 transformation.
 
-![](SearchBehaviorsLDA_files/figure-markdown_github/unnamed-chunk-22-1.png)
+![Figure6](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/clust2.jpg)
 
 **Figure 6** Cluster plot showing division of LD1 and LD2 across experimental Difficulty Treatment classes. It's not really fantastic.
 
