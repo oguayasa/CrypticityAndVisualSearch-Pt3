@@ -112,7 +112,7 @@ Create data frame with LD projections (scores) based on original data
 LD Scores by Search Outcome
 ---------------------------
 
-![Figure1](oguayasa/eyemovement-lda/imgs/hist1.jpg)
+![Figure1](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist1.jpg)
 
 **Figure 1** Histogram of LD1 scores by Search Outcome class with visible means. Note separation between positive and negative search classes.
 
