@@ -1,8 +1,14 @@
-This code demonstrates an application of linear discriminant analysis ([LDA](http://sebastianraschka.com/Articles/2014_python_lda.html)) for dimensionality reduction on eye-movement behaviors recording during a visual search experiment. This data set containing several different eye-movement measures organized by search outcome (Tp, Fp, Tn, Fn) from easy and experimental treatment (easy, hard). This code uses LDA to determine the combination of variables that best separates the different classes. LDA finds a linear combination of the predictors that gives maximum separation between the centers of the data while at the same time minimizing the variation within each group of data. Here we conduction LD Analysis on searchbehavior data to determine if different search types and difficulties can be separated into unique classes.
+This code demonstrates an application of linear discriminant analysis ([LDA](http://sebastianraschka.com/Articles/2014_python_lda.html)) for dimensionality reduction on eye-movement behaviors recording during a visual search experiment. This data set contains several different eye-movement measures organized by search outcome (Tp, Fp, Tn, Fn). This code implements LDA analysis using theusing the ([MASS](https://cran.r-project.org/web/packages/MASS/MASS.pdf)) package to determine the combinations of variables that best separate the different classes (search outcomes & experimental treatments), and if different classes are characterized by different combinations of behaviors. This analysis is meant to answer questions like, *"Are distinct search classes described by different patterns of eye movement behaviors?"*, or *"How do subjects differ in their behavior during successful and unsuccessful searches?"*, while also describing the behavior combinations of interest.
 
-Outputs the results of LDA anlaysis as a cluster plot with data points colored by search type and difficulty treatment.
+While PCA is a more commonly used technique for dimensionality reduction, LDA is more appropriate for our current questions. This is because LDA finds linear combinations of the predictors (original variables) that gives *maximum separation* between the centers of the data classes while at the same time minimizing the variation within each group of data. LDA is able to do this because it is a "supervised" technique, meaning that each entry (data row) of predictors is associated with a class, and LDA takes the class into account when doing dimensionality reduction.
 
-Converts individual behaviors to LDA scores. Compare scores across classes to see if there are significantly different search behaviors exhibited across search types and difficulty treatments.
+In contrast, PCA is "unsupervised", meaning that it is given no information about the data class to which an entry of predictors belong. Instead, blind to data class, it tries to find the linear combinations of predictors that account for the most variation within the entire data set.
+
+Summary: Conduct two separate LDA on search behavior data to determine if different search types and difficulties can be separated into unique classes. Converts individual behaviors to LDA scores. Compare scores across 1.) search outcomes to see if there are significantly different search behaviors depending on search success, and 2.) difficulty treatments.
+
+Requires: Included R libraries, data files
+
+Outputs: the results of LDA anlaysis as a cluster plot with data points colored by search type and difficulty treatment.
 
 Initializing Steps
 ==================
@@ -43,8 +49,8 @@ Include variables identifying experimental treatments and search outcomes
 | Tp           | P01    | most   |           2|           3|             -1.25|       -0.29|
 | Tp           | P01    | most   |           2|           4|             -1.57|       -0.60|
 
-Creating the LDA model
-======================
+Creating the LDA model using Search Outcome Classes
+===================================================
 
 Check model performance using cross validation
 ----------------------------------------------
@@ -74,7 +80,7 @@ Examine contents of our LDA model
 
 The number of observations per Search Outcome class
 
-|Class| #Obs|
+|     |Count|
 |:----|----:|
 | Fn  |  290|
 | Fp  |   91|
@@ -83,7 +89,7 @@ The number of observations per Search Outcome class
 
 The prior probabilities of each class
 
-|Class| Prior|
+|     |Priors|
 |:----|-----:|
 | Fn  |  0.30|
 | Fp  |  0.09|
@@ -99,7 +105,9 @@ Means of original variables by class
 | Tn  |              0.82|       -0.34|        -0.26|       0.27|       0.12|
 | Tp  |             -0.76|        0.76|         0.69|       0.31|      -0.08|
 
-Variance explained by each LD
+### Variance explained by each LD
+
+An easy way to check that you didn't enter incorrect class information into the model is to check the number of output LDs. The number of LDs produced by an LDA model is always equal to the number of classes minus 1. Here I have three LD's, which is expected given the fact that I have four classes. In addition, you should check to make sure that the cumulative variance explained by all of the LDs sums to 100%, otherwise something funky is going on with how your model treats variance (although this last check is much more likely to be relevant for those who are writing their own functions for performing LDA).
 
 |     |  VarianceExplained|
 |-----|------------------:|
@@ -107,12 +115,17 @@ Variance explained by each LD
 | LD2 |              0.076|
 | LD3 |              0.001|
 
-LD1 explains a whopping ~92% of the variance in the orginal data set. Combined with LD2 (~8%), these two LDs explain almost all of the observed variance.
+LD1 explains a whopping ~92% of the variance in the orginal data set, and combined with LD2 (~7%), these two LDs explain almost all of the observed variance. LD3 does explain much of anything, so we won't include it in later analysis.
 
-Visualize Class Separations
-===========================
+Visualize Class Separation based on Search Outcome
+==================================================
 
-Create data frame with LD projections (scores) based on original data
+Now, we transform our set of original predictors using LD projections to get each data row's predicted LD "value"" according to the LD1 and LD2 functions. If you are more familiar with PCA, LD "scores" are the equivalent to PC scores. By transforming our original data using the LD projections, and then plotting the LD scores values by class, we can visualize how well the LDA separates data belonging to distinct classes.
+
+Calculate LD "scores" using LD projections
+------------------------------------------
+
+Create data frame with LD projections (scores) by using the LDA model to estimate LD1 and LD2 values from the original data.
 
 ``` r
 # model predictions
@@ -131,8 +144,8 @@ h1.Data = data.frame(SearchType = search.Data$search.Class, DifTreatment =
 | Tp         | most         |  2.593909|  -0.4063113|
 | Tp         | most         |  2.288270|  -0.7972150|
 
-LD Scores by Search Outcome
----------------------------
+Plot LD Scores by Search Outcome
+--------------------------------
 
 ![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist1.jpg)
 
@@ -148,25 +161,16 @@ LD Scores by Search Outcome
 
 From examining these plots, it appears that LD1 is responsible for separating search outcomes into by positive (actioned) and negative (inactioned) searches. In contrast LD2 represents separation between true (successful) and false (unsucessful) search outcomes.
 
-LD Scores by Difficulty Treatment
----------------------------------
-
-![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist3.jpg)
-
-**Figure 4** Histogram of LD1 scores by experimental Difficulty Treatment with visible class means. Not much separation here.
-
-![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/hist4.jpg)
-
-**Figure 5** Histogram of LD2 scores by experimental Difficulty Treatment with visible class means. Slightly better seperation than achieved with LD1 transformation.
-
-![](https://github.com/oguayasa/eyemovement-lda/blob/master/imgs/clust2.jpg)
-
-**Figure 6** Cluster plot showing division of LD1 and LD2 across experimental Difficulty Treatment classes. It's not really fantastic.
-
-LD2 does a slightly better job of separating the data based on difficulty treatment. While there is still quite a bit of overlap, Fig 5 shows searches during the Hard treatment ("least") had higher LD2 scores on average than searches during the Easy treatment ("most").
+From examining these plots, it appears that LD1 is responsible for separating search outcomes into by positive (actioned) and negative (inactioned) searches. In contrast LD2 represents separation between true (successful) and false (unsucessful) search outcomes. Despite clear clusters (Fig. 1), the different search outcome classes overlap along the LD1 and LD2 axes. However, the separation among between classes is *much* better along LD1 than LD2 (Fig. 2 & 3 respectively), which is not a surprising result given that LD1 explained ~92% of the variation in this data, while LD2 only accounted for ~7%.
 
 Relating original variables to LD1 and LD2
 ==========================================
+
+For those more familiar with linear regression, LDA conducted with more than two classes is similar to a Multivariate Multiple Linear Regression or Mutltivariate General Linear Model, where there are multiple dependent variables (outcomes or classes) and multiple independent variables (predictors) that have interrationships described by significant linear correlations.
+
+The eparate classes are synonymous with categorical outcome variables (or factors depending on your statistical software), and the coefficients of the linear discriminant functions are equivalent to, and perhaps more easily visualized as, the *β* values associated with each predictor variable in a multivariate linear model.
+
+Therefore, just like in multivariate regression, the predictors with large absolute *β* values contributed the most to the model.
 
 Coefficient values of each variable in the discriminant function equations for LD1 and LD2
 ------------------------------------------------------------------------------------------
@@ -181,7 +185,7 @@ Coefficient values of each variable in the discriminant function equations for L
 | Fix2End          |  -0.55|   0.59|
 | ActiveSearchTime |   1.03|   0.87|
 
-For LD1, the orginal variables with the largest coeffient (beta) in the LD1 function Were: NumSamplingTrips, ActiveSearchTime, Fix2End, and NumGazeComp, in that order. These orginal variables were of the greatest importance when finding the function that resulted in the best discrimination between classes (explained the most variance between classes). In contrast, the original variables NumFixComp, TotNumFix, and AvgDurFix have coefficients close to zero, and therefore neighter contributed much to the resulting function for LD1 nor explained any variance between classes. Similar interpretations can be done for LD2.
+Here, For LD1, the orginal variables with the largest coefficients (*β*) in the LD1 function Were: NumSamplingTrips, ActiveSearchTime, Fix2End, and NumGazeComp, in that order. These orginal variables were of the greatest importance when finding the function (linear combination of original predictors) that gave the best separation between classes. In contrast, the original variables NumFixComp, TotNumFix, and AvgDurFix have *β* values close to zero, and therefore neighter contributed much to the resulting function for LD1 nor explained any variance between classes. Similar interpretations can be done for LD2.
 
 Interpreting LD1 and LD2 with variable loadings
 -----------------------------------------------
@@ -198,11 +202,20 @@ Correlate the original variable values with the LD "scores" to determine how eac
 | Fix2End          |  -0.78|  0.57|
 | ActiveSearchTime |   0.52|  0.80|
 
-Note that for both LD1 and LD2, some of the orginal variables that had negligible coefficient values now have sizeable "loadings" along the LDs. However, just because these predictors have high "loadings" does not mean that they contributed significantly to the LD. Remember, the coefficients represent predictor betas of the original variables that explain variation while these loadings only represent correlations between the original variables and the LD function. Because NumFixComp, TotNumFix, and AvgDur contributed so little to the LD1 function and explained so little variation, there really isn't much point in interpreting their loadings. Same goes for LD2.
+Note that for both LD1 and LD2, some of the orginal variables that had negligible coefficient values now have sizeable "loadings" along the LDs. However, just because these predictors have high "loadings" does not mean that they made significant contributions to the class separation described by the LD functions. Remember, coefficients represent *β* values of the original variables in a multivariate linear model. On the other hand, these loadings only represent correlations between the original variables and the scores derived from the LD function. Because NumFixComp, TotNumFix, and AvgDur contributed so little to the LD1 function and explained so little variation, there really isn't much point in including their loadings in the interpretation of LD1. The same analysis can be repeated for LD2.
 
 Summary
 =======
 
-After defining our classes as search outcomes, we identified two LD functions that accounted for nearly all of the variance (92%, 8%) in our data by using LDA for dimensionality reduction (Table 6). Along LD1, the search outcomes were distinctly clustered by positive and negative search outcomes (Fig. 1 & 3), but there was little separation between difficulty treatment classes (Fig. 4 & 6). LD2 appeares to search outcomes based on whether a search resulted in a false or true finding (Fig. 2 & 3), but it too does poorly (althought slightly better than LD1) when separating by difficulty treatment (Fig. 5 & 6).
+Search Outcomes
+---------------
 
-We discovered that out of our 7 original variables, only 4 really contributed to LD1, so only these four contribted to explaining 92% of the variance between classes. Looking at the coeffients and loadings of these four original variables, we can conclude that relative to positive searches, negative searches are characterized by lower values of NumSamplingTrips and Fix2End, and higher values of ActiveSearchTime and NumGazeComp.
+After defining our classes as search outcomes, we identified two LD functions that accounted for nearly all of the variance (92%, 8%) in our data by using LDA for dimensionality reduction (Table 6). Along LD1, the search outcomes were distinctly clustered by positive and negative search outcomes (Figs. 1 & 2), while LD2 did a better job separating search outcomes based on whether search resulted in a false or true finding (Figs. 1 & 3).
+
+We discovered that out of our seven original variables, four contributed to LD1 and gave the greatest separation between groups, so only these four contribted to explaining 92% of the variance between classes (Table 8). Looking at the coeffients and correlational loadings of these four original variables, we can conclude that searches that scored higher on LD1 were those where subjects made very few passes (NumSamplingTrips), with lots of local comparisons that lead to significant active search time (NumFixComp, ActiveSearchTime) and yielded a low total duration of search (Fix2End). On the other hand, interpreting LD2 is a bit more complicated, but it looks like searches with higher LD2 scores were more thorough, with greater amounts of all search behaviors.
+
+On average, positive searches had higher LD1 values than negative searches (Fig. 2) indicating that positive searchers shorter and more intense than negative searches. Correct searches had slightly higher LD2 scores than incorrect searches (Fig. 3), suggesting that they were more thorough searches, but this difference is small.
+
+In a future post, we will talk about how we could formally compare LD1 and LD2 scores across classes using GLMMs (as an alternative to the ANOVA approach).
+
+
