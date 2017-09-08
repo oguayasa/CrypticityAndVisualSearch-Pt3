@@ -212,49 +212,6 @@ Note that for both LD1 some of the orginal variables that had negligible coeffic
 
 Having said that, let's look at the loadings of our relevant variables. NumSamplingTrips and Fix2End have strong negative loadings, while ActiveSearchTime and TotNumFix have strong positive loadings. This means that the larger the LD1 score, the more separate visiting and total search time *and* less time spent searching in the target areas and fewer fixations. Looking at how the positive searches have highter values (on avearge) than the negative searches (See Fig. 2), this indicates that positive searches required more visits and a longer total search time, but surprisingly less time spent in the target areas and fewer fixations.
 
-Final Steps
-===========
-
-Within the positive and negative search outcomes, the True and False search outcomes overlap quite a bit, but they don't seem identical. To check if Tp and Fp, and Tn and Fn distributions are significnatly different, let's quickly examining the median values and running a paired significance test.
-
-Compare LD1 Scores betwenn Tp & Fp, and Tn & Fn
------------------------------------------------
-
-We will first report the median values, and then use a Wilcoxon Signed-Rank test (a dependent, non-parametric t-test) to determine if the two distriubtions LD1 scores are significantly different from each other or not.
-
-``` r
-# run a wilcoxon signed rank test
-ld1.Test1 <- wilcox.test(Tn.Scores, Fn.Scores, 
-                        paired = TRUE, conf.int = TRUE, 
-                        na.action = na.exclude)
-
-# run a wilcoxon signed rank test
-ld1.Test2 <- wilcox.test(Tp.Scores, Fp.Scores, 
-                        paired = TRUE, conf.int = TRUE, 
-                        na.action = na.exclude)
-```
-
-|     |  Medians|
-|-----|--------:|
-| Tp  |     2.32|
-| Tn  |    -1.75|
-| Fn  |    -1.16|
-| Fp  |     1.12|
-
-|  estimate|  statistic|  p.value|  conf.low|  conf.high| method                                               | alternative |
-|---------:|----------:|--------:|---------:|----------:|:-----------------------------------------------------|:------------|
-|     -0.44|      10961|        0|     -0.56|      -0.32| Wilcoxon signed rank test with continuity correction | two.sided   |
-
-|  estimate|  statistic|  p.value|  conf.low|  conf.high| method                                               | alternative |
-|---------:|----------:|--------:|---------:|----------:|:-----------------------------------------------------|:------------|
-|      1.14|       3788|        0|      0.91|       1.38| Wilcoxon signed rank test with continuity correction | two.sided   |
-
-It looks like the LD1 scores for Tn & Fn and Tp & Fp searches are significantly different.
-
-Let's first look at the comparison between Tn and Fn searches. From the median values, we can see that Tn LD1 scores are slightly more negative than scores during Fn searches. This is interesting. Remember than Fn searches are cases where a target was present, but the subject failed to find it. The fact that Fn searches are more similar to Tp searches indicates that even though the search outcome was the same (negative), *subjects behaved differently depending on whether a target was or was not there*. This indicates that there are slightly different cognitive processes occuring during Tn and Fn searches, even if the subjects isn't entirely aware of it.
-
-Now looking at Tp and Fp searches, we can see that Fp searches have a more negative LD1 score on average than Tp earches. This means that an Fp search (when a subject believed a target was present, but in reality there was nothing there) is not only different from a Tp search, but its *more similar to negative searches* tha Tp searches are (cases where subjects decided there was nothing there). Again, it appears that there are different cognitive processes going on during the time preceeding the decisions about whether a target was there or not, even if the outcome of the decision was the same.
-
 Conclusions
 ===========
 
